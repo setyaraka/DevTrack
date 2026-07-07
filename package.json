@@ -1,0 +1,21 @@
+{
+  "name": "devtrack",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @devtrack/web",
+    "dev:web": "npm run dev --workspace @devtrack/web",
+    "dev:api": "npm run start:dev --workspace @devtrack/api",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"**/*.{ts,vue,js,json,md,css}\"",
+    "prisma:generate": "npm run prisma:generate --workspace @devtrack/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace @devtrack/api"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}

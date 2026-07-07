@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum WorkLogCategory {
+  BUG
+  FEATURE
+  IMPROVEMENT
+  RESEARCH
+  MEETING
+  DISCUSSION
+  REFACTOR
+  DOCUMENTATION
+  TESTING
+}
+
+enum FeedbackCategory {
+  CODE_REVIEW
+  DESIGN
+  COMMUNICATION
+  PROCESS
+  TECHNICAL
+  LEADERSHIP
+  OTHER
+}
+
+enum AchievementCategory {
+  DELIVERY
+  QUALITY
+  LEADERSHIP
+  COLLABORATION
+  LEARNING
+  IMPACT
+}
+
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String
+  passwordHash  String
+  refreshTokens RefreshToken[]
+  journals      DailyJournal[]
+  tasks         DailyTask[]
+  workLogs      WorkLog[]
+  learnings     Learning[]
+  feedback      Feedback[]
+  achievements  Achievement[]
+  challenges    Challenge[]
+  weeklyReviews WeeklyReview[]
+  monthlyReviews MonthlyReview[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model DailyJournal {
+  id         String      @id @default(uuid())
+  date       DateTime
+  reflection String?
+  summary    String?
+  notes      String?
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks      DailyTask[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model DailyTask {
+  id               String        @id @default(uuid())
+  title            String
+  completed        Boolean       @default(false)
+  priority         TaskPriority  @default(MEDIUM)
+  order            Int           @default(0)
+  dueDate          DateTime?
+  date             DateTime
+  rolledOverFromId String?
+  rolledOverFrom   DailyTask?    @relation("TaskRollover", fields: [rolledOverFromId], references: [id])
+  rolledOverTo     DailyTask[]   @relation("TaskRollover")
+  journalId        String?
+  journal          DailyJournal? @relation(fields: [journalId], references: [id], onDelete: SetNull)
+  userId           String
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([userId, date])
+  @@index([rolledOverFromId])
+}
+
+model WorkLog {
+  id          String          @id @default(uuid())
+  title       String
+  description String
+  category    WorkLogCategory
+  date        DateTime
+  impact      String?
+  relatedPr   String?
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, category])
+}
+
+model Learning {
+  id                 String   @id @default(uuid())
+  topic              String
+  description        String?
+  understandingLevel Int
+  tags               String[]
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Feedback {
+  id        String           @id @default(uuid())
+  reviewer  String
+  feedback  String
+  category  FeedbackCategory
+  applied   Boolean          @default(false)
+  date      DateTime
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([userId, date])
+}
+
+model Achievement {
+  id        String              @id @default(uuid())
+  situation String
+  task      String
+  action    String
+  result    String
+  impact    String?
+  category  AchievementCategory
+  date      DateTime            @default(now())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([userId, date])
+}
+
+model Challenge {
+  id             String   @id @default(uuid())
+  problem        String
+  rootCause      String?
+  solution       String?
+  result         String?
+  lessonsLearned String?
+  date           DateTime @default(now())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, date])
+}
+
+model WeeklyReview {
+  id               String   @id @default(uuid())
+  weekStart        DateTime
+  biggestWin       String?
+  biggestChallenge String?
+  lessonsLearned   String?
+  nextWeekGoals    String?
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
+}
+
+model MonthlyReview {
+  id              String   @id @default(uuid())
+  monthStart      DateTime
+  summary         String?
+  reflection      String?
+  managerFeedback String?
+  personalNotes   String?
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, monthStart])
+  @@index([userId, monthStart])
+}

@@ -24,6 +24,11 @@ const newTaskPriority = ref<'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'>('MEDIUM');
 
 const rolloverInfo = ref<string | null>(null);
 
+const expandedTasks = ref<Record<string, boolean>>({});
+const toggleTaskExpand = (id: string) => {
+  expandedTasks.value[id] = !expandedTasks.value[id];
+};
+
 // Get local date string YYYY-MM-DD
 const getLocalDateString = (d = new Date()) => {
   const year = d.getFullYear();
@@ -269,8 +274,14 @@ const handleDeleteTask = (id: string) => {
                   />
                   <!-- Task Title -->
                   <span
-                    class="text-sm min-w-0 truncate text-ink-900"
-                    :class="{ 'line-through text-ink-400': task.completed }"
+                    @click="toggleTaskExpand(task.id)"
+                    class="text-sm min-w-0 text-ink-900 cursor-pointer"
+                    :class="{
+                      'truncate': !expandedTasks[task.id],
+                      'whitespace-normal break-all': expandedTasks[task.id],
+                      'line-through text-ink-400': task.completed
+                    }"
+                    :title="task.title"
                   >
                     {{ task.title }}
                   </span>

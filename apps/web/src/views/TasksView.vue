@@ -120,6 +120,11 @@ const handleUpdatePriority = (id: string, priority: 'LOW' | 'MEDIUM' | 'HIGH' | 
 const handleDeleteTask = (id: string) => {
   store.deleteTask(id);
 };
+
+const expandedTasks = ref<Record<string, boolean>>({});
+const toggleTaskExpand = (id: string) => {
+  expandedTasks.value[id] = !expandedTasks.value[id];
+};
 </script>
 
 <template>
@@ -288,8 +293,14 @@ const handleDeleteTask = (id: string) => {
               <!-- Task Title & Due Date -->
               <div class="min-w-0 flex-1">
                 <p
-                  class="text-sm font-medium text-ink-900 truncate"
-                  :class="{ 'line-through text-ink-400': task.completed }"
+                  @click="toggleTaskExpand(task.id)"
+                  class="text-sm font-medium text-ink-900 cursor-pointer"
+                  :class="{
+                    'truncate': !expandedTasks[task.id],
+                    'whitespace-normal break-all': expandedTasks[task.id],
+                    'line-through text-ink-400': task.completed
+                  }"
+                  :title="task.title"
                 >
                   {{ task.title }}
                 </p>

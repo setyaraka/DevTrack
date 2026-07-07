@@ -12,6 +12,8 @@ import AchievementsView from '@/views/AchievementsView.vue';
 import ChallengesView from '@/views/ChallengesView.vue';
 import WeeklyReviewsView from '@/views/WeeklyReviewsView.vue';
 import MonthlyReviewsView from '@/views/MonthlyReviewsView.vue';
+import ReportsView from '@/views/ReportsView.vue';
+import SearchView from '@/views/SearchView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 
@@ -42,6 +44,8 @@ export const router = createRouter({
         { path: 'challenges', name: 'challenges', component: ChallengesView },
         { path: 'weekly-reviews', name: 'weekly-reviews', component: WeeklyReviewsView },
         { path: 'monthly-reviews', name: 'monthly-reviews', component: MonthlyReviewsView },
+        { path: 'reports', name: 'reports', component: ReportsView },
+        { path: 'search', name: 'search', component: SearchView },
       ],
     },
   ],

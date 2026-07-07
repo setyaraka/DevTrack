@@ -3,6 +3,8 @@ import { useAuthStore } from '@/stores/auth';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import DashboardView from '@/views/DashboardView.vue';
+import JournalView from '@/views/JournalView.vue';
+import TasksView from '@/views/TasksView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 
@@ -24,6 +26,8 @@ export const router = createRouter({
       children: [
         { path: '', redirect: '/dashboard' },
         { path: 'dashboard', name: 'dashboard', component: DashboardView },
+        { path: 'journal', name: 'journal', component: JournalView },
+        { path: 'tasks', name: 'tasks', component: TasksView },
       ],
     },
   ],

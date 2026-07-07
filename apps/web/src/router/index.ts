@@ -14,6 +14,7 @@ import WeeklyReviewsView from '@/views/WeeklyReviewsView.vue';
 import MonthlyReviewsView from '@/views/MonthlyReviewsView.vue';
 import ReportsView from '@/views/ReportsView.vue';
 import SearchView from '@/views/SearchView.vue';
+import SettingsView from '@/views/SettingsView.vue';
 import LoginView from '@/views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 
@@ -46,6 +47,7 @@ export const router = createRouter({
         { path: 'monthly-reviews', name: 'monthly-reviews', component: MonthlyReviewsView },
         { path: 'reports', name: 'reports', component: ReportsView },
         { path: 'search', name: 'search', component: SearchView },
+        { path: 'settings', name: 'settings', component: SettingsView },
       ],
     },
   ],

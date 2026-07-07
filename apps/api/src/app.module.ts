@@ -12,6 +12,7 @@ import { LearningModule } from './learning/learning.module';
 import { MonthlyReviewModule } from './monthly-review/monthly-review.module';
 import { ReportModule } from './report/report.module';
 import { SearchModule } from './search/search.module';
+import { SettingsModule } from './settings/settings.module';
 import { UsersModule } from './users/users.module';
 import { WeeklyReviewModule } from './weekly-review/weekly-review.module';
 import { WorkLogModule } from './work-log/work-log.module';
@@ -34,6 +35,7 @@ import { WorkLogModule } from './work-log/work-log.module';
     MonthlyReviewModule,
     SearchModule,
     ReportModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

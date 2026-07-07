@@ -60,8 +60,26 @@ model User {
   challenges    Challenge[]
   weeklyReviews WeeklyReview[]
   monthlyReviews MonthlyReview[]
+  avatarUrl     String?
+  company       String?
+  jobTitle      String?
+  settings      Settings?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+}
+
+model Settings {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme            String   @default("SYSTEM")
+  sidebarMode      String   @default("EXPANDED")
+  workingDays      Json     @default("[\"MONDAY\",\"TUESDAY\",\"WEDNESDAY\",\"THURSDAY\",\"FRIDAY\"]")
+  autoTaskRollover Boolean  @default(false)
+  rolloverTime     String   @default("00:00")
+  timezone         String   @default("UTC")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model RefreshToken {

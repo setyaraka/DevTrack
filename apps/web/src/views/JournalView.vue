@@ -8,6 +8,7 @@ import {
   TrashIcon,
   ArrowPathIcon,
   CheckIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import BaseButton from '@/components/ui/BaseButton.vue';
 
@@ -21,6 +22,8 @@ const notes = ref('');
 // Task creation states
 const newTaskTitle = ref('');
 const newTaskPriority = ref<'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'>('MEDIUM');
+const newTaskDueDate = ref('');
+const showCreateModal = ref(false);
 
 const rolloverInfo = ref<string | null>(null);
 
@@ -97,8 +100,14 @@ const setToday = () => {
 // Tasks actions
 const handleCreateTask = async () => {
   if (!newTaskTitle.value.trim()) return;
-  await store.createTask(newTaskTitle.value.trim(), newTaskPriority.value);
+  await store.createTask(
+    newTaskTitle.value.trim(),
+    newTaskPriority.value,
+    newTaskDueDate.value || undefined
+  );
   newTaskTitle.value = '';
+  newTaskDueDate.value = '';
+  showCreateModal.value = false;
 };
 
 const handleToggleTask = (id: string, completed: boolean) => {
@@ -225,32 +234,16 @@ const handleDeleteTask = (id: string) => {
         <!-- Right: Task List (5 cols) -->
         <section class="lg:col-span-5 space-y-4">
           <div class="rounded-xl border border-ink-200 bg-white p-5 shadow-sm space-y-5">
-            <h2 class="text-lg font-semibold text-ink-950 border-b border-ink-100 pb-3">Tasks</h2>
-
-            <!-- Quick Add Task Form -->
-            <form @submit.prevent="handleCreateTask" class="flex gap-2">
-              <input
-                v-model="newTaskTitle"
-                type="text"
-                placeholder="Add a new task..."
-                class="flex-1 rounded-lg border border-ink-250 bg-white px-3 py-2 text-sm placeholder:text-ink-350 focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
-              />
-              <select
-                v-model="newTaskPriority"
-                class="rounded-lg border border-ink-250 bg-white px-2 py-2 text-sm text-ink-700 focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500"
-              >
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-                <option value="URGENT">Urgent</option>
-              </select>
+            <div class="flex items-center justify-between border-b border-ink-100 pb-3">
+              <h2 class="text-lg font-semibold text-ink-950">Tasks</h2>
               <button
-                type="submit"
-                class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent-600 text-white hover:bg-accent-500 transition"
+                type="button"
+                @click="showCreateModal = true"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-ink-200 bg-white text-ink-500 hover:border-accent-500 hover:text-accent-600 hover:shadow-sm transition"
               >
                 <PlusIcon class="h-5 w-5" />
               </button>
-            </form>
+            </div>
 
             <!-- Tasks Listing -->
             <div class="space-y-2">
@@ -321,5 +314,68 @@ const handleDeleteTask = (id: string) => {
         </section>
       </template>
     </div>
+
+    <!-- Create Task Modal -->
+    <transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/40 backdrop-blur-sm">
+        <div class="bg-white rounded-xl border border-ink-200 shadow-xl w-full max-w-md p-6 space-y-4">
+          <div class="flex justify-between items-center border-b border-ink-100 pb-3">
+            <h3 class="text-base font-bold text-ink-950">Create New Task</h3>
+            <button @click="showCreateModal = false" class="text-ink-400 hover:text-ink-600 transition">
+              <XMarkIcon class="h-5 w-5" />
+            </button>
+          </div>
+          
+          <form @submit.prevent="handleCreateTask" class="space-y-4">
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-ink-700">Task Title</label>
+              <input
+                v-model="newTaskTitle"
+                type="text"
+                required
+                placeholder="What needs to be done?"
+                class="w-full rounded-lg border border-ink-250 bg-white px-3 py-2 text-sm focus:border-accent-500 focus:outline-none"
+              />
+            </div>
+
+            <div class="grid gap-4 grid-cols-2">
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-ink-700">Priority</label>
+                <select
+                  v-model="newTaskPriority"
+                  class="w-full rounded-lg border border-ink-250 bg-white px-3 py-2 text-sm text-ink-750 focus:border-accent-500 focus:outline-none"
+                >
+                  <option value="LOW">Low</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="HIGH">High</option>
+                  <option value="URGENT">Urgent</option>
+                </select>
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-ink-700">Due Date (Optional)</label>
+                <input
+                  v-model="newTaskDueDate"
+                  type="date"
+                  class="w-full rounded-lg border border-ink-250 bg-white px-3 py-2 text-sm text-ink-750 focus:border-accent-500 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+              <BaseButton variant="secondary" type="button" @click="showCreateModal = false">Cancel</BaseButton>
+              <BaseButton type="submit">Create Task</BaseButton>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>

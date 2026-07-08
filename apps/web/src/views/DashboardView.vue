@@ -21,10 +21,10 @@ const cards = computed(() => {
     { label: 'Bugs Solved', value: c.bugsSolved, caption: 'Bug fixes logged' },
     { label: 'Features Delivered', value: c.featuresDelivered, caption: 'New features shipped' },
     { label: 'Improvements', value: c.improvements, caption: 'Optimizations completed' },
-    { label: 'Learning Topics', value: c.learningTopics, caption: 'Growth topics tracked' },
-    { label: 'Achievements', value: c.achievements, caption: 'STAR success stories' },
-    { label: 'Challenges Logged', value: c.challenges, caption: 'Roadblocks handled' },
-    { label: 'Feedback Received', value: c.feedbackReceived, caption: 'Constructive review inputs' },
+    // { label: 'Learning Topics', value: c.learningTopics, caption: 'Growth topics tracked' },
+    // { label: 'Achievements', value: c.achievements, caption: 'STAR success stories' },
+    // { label: 'Challenges Logged', value: c.challenges, caption: 'Roadblocks handled' },
+    // { label: 'Feedback Received', value: c.feedbackReceived, caption: 'Constructive review inputs' },
   ];
 });
 
@@ -81,7 +81,7 @@ const trendPoints = computed(() => {
 
     <template v-else-if="store.stats">
       <!-- Stats Cards -->
-      <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <section class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
         <StatCard
           v-for="stat in cards"
           :key="stat.label"
@@ -174,14 +174,14 @@ const trendPoints = computed(() => {
         </BaseCard>
 
         <!-- Work Log Category distribution -->
-        <BaseCard class="p-5 space-y-4">
+        <BaseCard class="p-5 space-y-4 lg:col-span-2">
           <h2 class="text-sm font-semibold text-ink-900">Work Log Category Distribution</h2>
           
           <div v-if="categoryChart.length === 0" class="flex h-36 items-center justify-center border border-dashed border-ink-150 rounded-lg">
             <p class="text-xs text-ink-400">No work log categories recorded yet.</p>
           </div>
 
-          <div v-else class="space-y-2.5 max-h-44 overflow-y-auto pr-1">
+          <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 max-h-44 overflow-y-auto pr-1">
             <div v-for="item in categoryChart" :key="item.category" class="space-y-1">
               <div class="flex justify-between text-xs">
                 <span class="font-medium text-ink-750 uppercase tracking-wide text-2xs">{{ item.category }}</span>
@@ -198,7 +198,7 @@ const trendPoints = computed(() => {
         </BaseCard>
 
         <!-- Learning levels distribution -->
-        <BaseCard class="p-5 space-y-4">
+        <!-- <BaseCard class="p-5 space-y-4">
           <h2 class="text-sm font-semibold text-ink-900">Skill Understanding Levels</h2>
           
           <div v-if="learningChart.length === 0" class="flex h-36 items-center justify-center border border-dashed border-ink-150 rounded-lg">
@@ -218,7 +218,7 @@ const trendPoints = computed(() => {
               <span class="text-3xs font-bold text-ink-500 text-center whitespace-nowrap">{{ item.level }}</span>
             </div>
           </div>
-        </BaseCard>
+        </BaseCard> -->
 
       </section>
     </template>
